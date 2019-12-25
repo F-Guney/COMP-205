@@ -1,6 +1,7 @@
-#include<stdio.h>
-int main()
-{
+#include <stdio.h>
+#include "reverse_order.h"
+
+void reverse_order(void) {
       char input[100] = "";
       printf("Enter file name: ");
       scanf("%s", input);
@@ -20,10 +21,9 @@ int main()
        {
             i++;
             fseek(fp,-i,SEEK_END);
-            //printf("%c",fgetc(fp));
             ch=fgetc(fp);
             printf("%c",ch);
       }
       printf("\n");
-      return 0;
+      
 }

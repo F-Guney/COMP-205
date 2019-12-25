@@ -4,6 +4,8 @@
 #include <readline/readline.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include "reverse_order.h"
+#include "root_calculator.h"
 
 char **get_input(char *);
 int cd(char *);
@@ -12,16 +14,11 @@ int history(char *[], int);
 int main() {
     char **command;
     char *input;
-    char *hist[20];
     pid_t child_pid;
     int stat_loc;
     int current = 0;
 
-    for (int i=0; i < 20; i++) {
-	hist[i] = NULL;
-    }
-
-
+    
     while (1) {
 	input = readline("user@shell --> ");
         command = get_input(input);
@@ -34,7 +31,8 @@ int main() {
 
         if (strcmp(command[0], "cd") == 0) {
             if (cd(command[1]) < 0) {
-                perror(command[1]);
+		perror(command[1]);
+		
             }
 
             /* Skip the fork */
@@ -45,14 +43,15 @@ int main() {
 		exit(0);
 	}
 
-	free(hist[current]);
-	hist[current] = strdup(command[0]);
-	current = (current + 1) % 20;
-
-	if (strcmp(command[0], "history") == 0) {
-		history(hist, current);
+	if (strcmp(command[0], "reverse_order") == 0) {
+		reverse_order();
 	}
 
+	if (strcmp(command[0], "root_calculator") == 0) {
+		root_calculator();
+	}
+
+		
         child_pid = fork();
         if (child_pid < 0) {
             perror("Fork failed");
@@ -62,7 +61,7 @@ int main() {
         if (child_pid == 0) {
             /* Never returns if the call is successful */
             if (execvp(command[0], command) < 0) {
-                perror(command[0]);
+		perror(command[0]);
                 exit(0);
             }
         } else {
