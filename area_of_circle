@@ -1,0 +1,6 @@
+pi=3
+
+radius="$1"
+r2=$((radius**2))
+area=$(expr $r2 \* $pi)
+echo $area
